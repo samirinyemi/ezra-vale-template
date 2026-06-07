@@ -1,12 +1,61 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap');
 @import "tailwindcss";
+
+@font-face {
+  font-family: "NHG Display";
+  src: url("/fonts/NHG-Display-55Roman.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+}
+@font-face {
+  font-family: "NHG Display";
+  src: url("/fonts/NHG-Display-65Medium.otf") format("opentype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: block;
+}
+@font-face {
+  font-family: "NHG Display";
+  src: url("/fonts/NHG-Display-75Bold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: block;
+}
+@font-face {
+  font-family: "NHG Display";
+  src: url("/fonts/NHG-Display-95Black.otf") format("opentype");
+  font-weight: 900;
+  font-style: normal;
+  font-display: block;
+}
+@font-face {
+  font-family: "NHG Text";
+  src: url("/fonts/NHG-Text-55Roman.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "NHG Text";
+  src: url("/fonts/NHG-Text-65Medium.otf") format("opentype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "NHG Text";
+  src: url("/fonts/NHG-Text-75Bold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
 
 :root {
   --background: #e4e2e2;
   --foreground: #131313;
   --body: #373737;
-  --font-display: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-text: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "NHG Display", ui-sans-serif, system-ui, sans-serif;
+  --font-text: "NHG Text", ui-sans-serif, system-ui, sans-serif;
 }
 
 /* Custom text selection — black background, white foreground.

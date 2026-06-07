@@ -1,6 +1,6 @@
 # Ezra Vale — Animated Photography Portfolio Template
 
-A fully animated photography portfolio built with Next.js 15, Tailwind v4, GSAP, and Inter.
+A fully animated photography portfolio built with Next.js 15, Tailwind v4, GSAP, and Neue Haas Grotesk.
 
 **Live demo:** https://ezra-vale-photographer-portfolio.vercel.app
 
@@ -52,7 +52,7 @@ Change the site's color palette. The page background should be [hex code, e.g. #
 ### Change the font
 
 ```
-Swap the typeface from Inter to [Font Name] (a Google Font) across the entire site. Update the @import URL at the top of app/globals.css and replace both Inter references in the :root font-family variables.
+Swap the typeface from Neue Haas Grotesk to [Font Name] across the entire site. If [Font Name] is a Google Font, replace the @font-face declarations at the top of app/globals.css with a @import url(...) line for it. If it's a local font, drop the .otf or .woff2 files into public/fonts/ and update the @font-face src. Either way, replace both NHG Display and NHG Text references in the :root font-family variables.
 ```
 
 ### Update the About page bio
@@ -116,7 +116,7 @@ Update the natW and natH values for each gallery item to match the file's actual
 
 - **Next.js 15** with TypeScript, App Router, Tailwind v4
 - **GSAP** for animation choreography
-- **Inter** loaded from Google Fonts
+- **Neue Haas Grotesk** Display + Text (trial files included in `public/fonts/`)
 - **`next/image`** with AVIF / WebP optimization and responsive `srcset`
 - **Custom intro animation** — wordmark letter-rise, image rises and flips through projects, peek cascade, infinite scroll column
 - **Per-project detail pages** with click-to-open transition and scroll-fade gallery
