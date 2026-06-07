@@ -1,0 +1,388 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap');
+@import "tailwindcss";
+
+:root {
+  --background: #e4e2e2;
+  --foreground: #131313;
+  --body: #373737;
+  --font-display: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-text: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Custom text selection — black background, white foreground.
+   Replaces the browser default (usually blue) to match the
+   restrained monochrome palette. Both `::selection` and the
+   Firefox-prefixed `::-moz-selection` are needed for full coverage. */
+::selection {
+  background-color: #131313;
+  color: #ffffff;
+}
+::-moz-selection {
+  background-color: #131313;
+  color: #ffffff;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-body: var(--body);
+  --font-display: var(--font-display);
+  --font-sans: var(--font-text);
+}
+
+/* Touch-target helper: adds invisible padding so the hit area is 44+ px
+   per Apple HIG / Material guidelines, while keeping the visual position
+   anchored via negative margin. Apply to small mobile chrome buttons. */
+.touch-target {
+  padding: 12px;
+  margin: -12px;
+}
+
+/* Global keyboard focus styles — visible only on keyboard navigation,
+   never on mouse click. */
+button:focus,
+a:focus,
+[role="button"]:focus {
+  outline: none;
+}
+button:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+html,
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* `overscroll-behavior: none` used to live here to suppress rubber-band
+     scrolling, but it ALSO disabled Chrome's mobile pull-to-refresh, which
+     mobile users expect on every site. Removed so the native gesture works.
+     The page body itself isn't scrollable anyway (section uses 100dvh +
+     overflow-hidden), so there's no overscroll to suppress. */
+  /* Hide the body scrollbar across browsers. The site's section uses
+     min-h-screen + overflow:hidden so the body shouldn't need to scroll,
+     but in case any micro-overflow appears (rounding, etc.) we hide the
+     bar so it doesn't show up as a visible track. */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbars on inner overflow:auto containers (mobile detail + about
+   pages) while keeping scroll fully functional. */
+.no-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+@keyframes rise {
+  from {
+    transform: translate3d(0, 100%, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes image-rise {
+  from {
+    transform: translate3d(0, 120px, 0);
+    opacity: 0;
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+.image-rise {
+  transform: translate3d(0, 120px, 0);
+  opacity: 0;
+  animation: image-rise 800ms cubic-bezier(0.2, 0.7, 0.15, 1) forwards;
+  will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .image-rise {
+    animation-duration: 0.01ms;
+  }
+}
+
+.column-static,
+.column-scroll {
+  position: absolute;
+  left: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.column-static {
+  transform: translate3d(-50%, 0, 0);
+}
+
+@keyframes spread {
+  from {
+    transform: translate3d(0, var(--from-y), 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.image-spread {
+  transform: translate3d(0, var(--from-y), 0);
+  /* Smooth, sleek out with the faintest hint of overshoot at the tail. */
+  animation: spread 1100ms cubic-bezier(0.22, 1.06, 0.36, 1) forwards;
+  will-change: transform;
+}
+
+/* Desktop only: applied to the scroll-column wrapper during the spreading
+   phase so it grows from DESKTOP_INTRO_SCALE (0.7) to 1.0 in sync with
+   the per-card image-spread fan-out. Without this the anchor card would
+   visibly JUMP from the scaled-down mini-expand size to the full
+   scrolling size at the moment the phase flipped. Same duration and
+   easing as .image-spread so the grow and the fan-out feel like one
+   continuous motion. transform-origin is 50% 50vh so the growth radiates
+   outward from where the anchor card sits, keeping it pinned at the
+   visual center while the rest of the column scales around it. */
+.spread-grow {
+  animation: spread-grow 1100ms cubic-bezier(0.22, 1.06, 0.36, 1) both;
+  transform-origin: 50% 50vh;
+}
+@keyframes spread-grow {
+  from {
+    transform: scale(0.7);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.column-scroll {
+  transform: translate3d(-50%, 0, 0);
+  will-change: transform;
+}
+
+@keyframes mini-peek {
+  0% {
+    transform: translate3d(0, 0, 0) scale(var(--peek-scale, 1));
+    animation-timing-function: cubic-bezier(0.34, 1.4, 0.64, 1); /* almost-bouncy out */
+  }
+  35% {
+    transform: translate3d(var(--peek-x, 0), var(--peek-y, 0), 0)
+      scale(var(--peek-scale, 1));
+    animation-timing-function: linear;
+  }
+  70% {
+    transform: translate3d(var(--peek-x, 0), var(--peek-y, 0), 0)
+      scale(var(--peek-scale, 1));
+    animation-timing-function: cubic-bezier(0.6, 0, 0.35, 1); /* smooth return */
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(var(--peek-scale, 1));
+  }
+}
+
+.mini-peek {
+  transform: translate3d(0, 0, 0) scale(var(--peek-scale, 1));
+  animation: mini-peek 1500ms forwards;
+  will-change: transform;
+}
+
+.h1-at-top {
+  /* Box top lands at SIDE_PADDING (24px) by translating from the flex-centered
+     position. Subtract the cap-top inset (set via inline --cap-top-inset) so
+     the VISIBLE top stroke of "E" lands at 24px, matching the 24px gutter on
+     left and right. */
+  transform: translateY(
+    calc(24px - 50vh + 50% - var(--cap-top-inset, 0px))
+  );
+  transition: transform 800ms cubic-bezier(0.2, 0.7, 0.15, 1);
+  will-change: transform;
+}
+
+/* Smooth font-size interpolation when h1 shrinks to logo size; opacity
+   transition drives the mobile "fade out big centered → fade in small
+   corner" handoff between mini-expand and scrolling. */
+h1.font-display {
+  transition:
+    transform 800ms cubic-bezier(0.2, 0.7, 0.15, 1),
+    font-size 800ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 320ms ease-out;
+}
+
+.logo-mode {
+  font-size: 22px !important;
+}
+
+/* Mobile-only: shifts the absolutely-positioned (top:16, left:16) h1
+   from its corner anchor to the visual center of the viewport. The
+   translate-percentages refer to the h1's own width/height, so:
+     X: 50vw − 16px (corner offset) − 50% of self = element center at 50vw
+     Y: 50dvh − 16px − 50% of self = element center at 50dvh
+   Combined with the existing transform / font-size transitions on
+   h1.font-display, this gives a smooth shrink-and-slide-to-corner when
+   the page leaves the intro phases and enters the resting native scroll. */
+.mobile-h1-centered {
+  transform: translate(
+    calc(50vw - 16px - 50%),
+    calc(50dvh - 16px - 50%)
+  );
+}
+
+/* Hover-drawn underline — used on Contact Photographer buttons. Lives in
+   CSS (not inline) so the :hover transition isn't beaten by inline-style
+   specificity. The line is 2px, draws from left to right over 380ms. */
+.btn-underline {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: left bottom;
+  background-size: 0% 2px;
+  transition: background-size 380ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.group:hover .btn-underline {
+  background-size: 100% 2px;
+}
+
+.fade-in {
+  animation: fade-in 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Fade-and-rise — the photographer image entrance on the About page.
+   Same easing as the detail-gallery scroll-fade so the two pages feel
+   like the same family. Longer (800ms) with a 20px rise — more
+   pronounced than the bare .fade-in, since it's a single hero image
+   anchoring the page rather than one of many gallery shots. */
+.fade-rise {
+  animation: fade-rise 800ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes fade-rise {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Mobile-specific: cards inflate from the size they had at the end of the
+   spread (where each card was IMAGE_WIDTH * MOBILE_INTRO_SCALE px wide) to
+   their final full-width 16px-padded size. Crucially, --expand-start is
+   set inline per-viewport so cards SIZE-MATCH the end of the spread (~253
+   px on a 390-wide phone) instead of starting smaller. Previously the
+   keyframe hardcoded scale(0.45), which on a wider native-scroll container
+   produced cards visibly smaller than what the spread just left on screen
+   — a "shrink then grow" glitch instead of a continuous "grow into rest". */
+.mobile-scroll-expand {
+  animation: mobile-scroll-expand 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  transform-origin: 50% 50%;
+}
+@keyframes mobile-scroll-expand {
+  from {
+    opacity: 0;
+    transform: scale(var(--expand-start, 0.7));
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.fade-out {
+  animation: fade-out 280ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+@keyframes fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+/* Typography — Neue Haas Grotesk Text 65 Medium */
+.body-home {
+  color: var(--body);
+  font-family: var(--font-text);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 18px;
+  letter-spacing: -0.16px;
+}
+
+.body-detail {
+  color: var(--body);
+  font-family: var(--font-text);
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 22px;
+  letter-spacing: -0.2px;
+}
+
+@keyframes line-rise {
+  from {
+    transform: translate3d(0, 100%, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.line-rise {
+  display: block;
+  transform: translate3d(0, 100%, 0);
+  animation: line-rise 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .image-spread,
+  .mini-peek {
+    animation-duration: 0.01ms;
+  }
+  .h1-at-top {
+    transition-duration: 0.01ms;
+  }
+}
+
+.letter-mask {
+  display: inline-block;
+  clip-path: inset(-25% -25% 0 -25%);
+  vertical-align: bottom;
+}
+
+.letter-rise {
+  display: inline-block;
+  transform: translate3d(0, 100%, 0);
+  animation: rise 1s cubic-bezier(0.2, 0.7, 0.15, 1) forwards;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .letter-rise {
+    animation-duration: 0.01ms;
+    animation-delay: 0ms !important;
+  }
+}
